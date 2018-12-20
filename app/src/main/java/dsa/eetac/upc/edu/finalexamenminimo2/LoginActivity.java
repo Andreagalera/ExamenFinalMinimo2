@@ -95,10 +95,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
-                    //Creamos un intent para abrir el nuevo activity, le ponemos el nombre de la clase relacionada
-                    Intent intent = new Intent(view.getContext(), MainActivity.class);
-                    //Se abre la actividad
-                    startActivity(intent);
+
 
             }
         });
@@ -346,16 +343,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            final SharedPreferences sharedPref =
-                    PreferenceManager. getDefaultSharedPreferences (LoginActivity. this );
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean( "registered" , true );
-            editor.putString( "username" , this . mEmail );
-            editor.putString( "password" , this . mPassword );
-            editor.apply();
+
 
             if (success) {
-                finish();
+               //Si sale bien
+                final SharedPreferences sharedPref =
+                        PreferenceManager. getDefaultSharedPreferences (LoginActivity. this );
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean( "registered" , true );
+                editor.putString( "username" , this.mEmail );
+                editor.putString( "password" , this.mPassword );
+                editor.apply();
+                newIntent();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -368,5 +367,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
-}
+
+    //Si se ha autenticado se abre otro activity(Main)
+    private void newIntent(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        }
+    }
 

@@ -2,6 +2,7 @@ package dsa.eetac.upc.edu.finalexamenminimo2;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
     //Declarar token (2 funciones al final)
     private String token;
     //Declarar textview y imageview que aparecen en el layout para pasar valor(solo utilizamos botones)
-    private TextView nommuni;
-    private TextView comarcamuni;
+    TextView nommuni;
+    TextView comarcamuni;
     ImageView fotomuni;
 
-    public Municipi municipis;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
         //Asignamos variable de de los diferents textview y image view a sus variables
         nommuni = findViewById(R.id.nommunicipitxt);
         comarcamuni = findViewById(R.id.nomcomarcatxt);
-        fotomuni = (ImageView) findViewById(R.id.municipiimage);
+        fotomuni = findViewById(R.id.municipiimage);
+
+        Intent intent = getIntent();
 
         //Progress loading. Justo al abrir esta actividad ponemos el spinner de cargando
         progressDialog = new ProgressDialog(this);
@@ -63,27 +66,26 @@ public class MainActivity extends AppCompatActivity {
         //Creamos API( vigilar que API este bien)
         myapirest = APIRest.createAPIRest();
 
+        getAllCities();
+
     }
 
     //Función llamr lista de municipios
+
     public void getAllCities() {
-        //Call<List<Municipi>> getAllMunicipi();
-        Call<List<Municipi>> municipiCall = myapirest.getAllMunicipi();
-        municipiCall.enqueue(new Callback<List<Municipi>>() {
+        Call<Municipi> municipiCall = myapirest.getAllMunicipi();
+        municipiCall.enqueue(new Callback<Municipi>() {
             @Override
-            public void onResponse(Call<List<Municipi>> call, Response<List<Municipi>> response) {
-                if(response.isSuccessful()){
-                    List<Municipi> municipiList =response.body();
+            public void onResponse(Call<Municipi> call, Response<Municipi> response) {
+                if (response.isSuccessful()) {
+                    Municipi municipis = response.body();
+                    List<Element> newList = municipis.getElements();
 
-                    municipiList =response.body();
-
-                    recycler.addMunicipis(municipiList);
-
-
-                    //Si el recyler se crea desaparece el pregressDialog
+                    if (newList.size() != 0) {
+                        recycler.addElements(newList);
+                    }
                     progressDialog.hide();
-                }
-                else {
+                } else {
                     Log.e("No api connection", response.message());
 
                     progressDialog.hide();
@@ -95,16 +97,18 @@ public class MainActivity extends AppCompatActivity {
                             .setTitle("Error")
                             .setMessage(response.message())
                             .setCancelable(false)
-                            .setPositiveButton("OK", (dialog, which) -> {
-                            });
+                            .setPositiveButton("De acuerdo", (dialog, which) -> finish());
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
+
                 }
+
             }
 
             @Override
-            public void onFailure(Call<List<Municipi>> call, Throwable t) {
+            public void onFailure(Call<Municipi> call, Throwable t) {
+
                 Log.e("No api connection: ", t.getMessage());
 
                 progressDialog.hide();
@@ -116,19 +120,15 @@ public class MainActivity extends AppCompatActivity {
                         .setTitle("Error")
                         .setMessage(t.getMessage())
                         .setCancelable(false)
-                        .setPositiveButton("OK", (dialog, which) -> {
-                        });
+                        .setPositiveButton("De acuerdo", (dialog, which) -> finish());
 
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
             }
         });
-
     }
 
+}
 
-    private void showProgress(boolean b) {
-    }
 
-    }
 

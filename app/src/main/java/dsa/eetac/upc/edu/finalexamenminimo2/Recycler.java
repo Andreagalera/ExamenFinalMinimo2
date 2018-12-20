@@ -2,6 +2,7 @@ package dsa.eetac.upc.edu.finalexamenminimo2;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,6 @@ public class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
 
     //Necesario paar el constructor del recycler
     private Context context;
-    private List<Municipi> data;
     private List<Element> data1;
 
 
@@ -30,9 +30,8 @@ public class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
 
         private ImageView municipiImageView;
         private TextView nommunicipi;
-        private Text escutmunicipi;
-        private LinearLayout linearLayout;
-
+        private TextView inemunicipi;
+        private ConstraintLayout constraintLayout;
 
         //DEcalramos los textviews y imageview del recycler
 
@@ -40,20 +39,20 @@ public class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
             super(v);
             municipiImageView=v.findViewById(R.id.municipiimage);
             nommunicipi=v.findViewById(R.id.nommunicipitxt);
-            escutmunicipi=v.findViewById(R.id.nomcomarcatxt);
-            linearLayout =v.findViewById(R.id.linearLayout);
+            inemunicipi=v.findViewById(R.id.nomcomarcatxt);
+            constraintLayout =v.findViewById(R.id.constraintLayout);
         }
 
     }
 
-    public void addMunicipis (List<Municipi> citiList){
-        data.addAll(citiList);
+    public void addElements (List<Element> citiList){
+        data1.addAll(citiList);
         notifyDataSetChanged();
     }
 
     //Constructor
     public Recycler(Context context) {
-        this.data = new ArrayList<>();
+        this.data1 = new ArrayList<>();
         this.context=context;
     }
 
@@ -68,16 +67,15 @@ public class Recycler extends RecyclerView.Adapter<Recycler.ViewHolder> {
 
     @Override
     public void onBindViewHolder(Recycler.ViewHolder holder, int position) {
-        //Municipi municipidata = ((Municipi) data.get(position));
-        Element element =((Element) data1.get(position));
-        holder.nommunicipi.setText(element.getIne());
-        //holder.escutmunicipi.setText(element.getMunicipiEscut();
+        Element element = data1.get(position);
+        holder.nommunicipi.setText(element.getMunicipiNom());
+        holder.inemunicipi.setText(element.getIne());
         Picasso.with(context).load(element.getMunicipiEscut()).into(holder.municipiImageView);
 
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data1.size();
     }
 }

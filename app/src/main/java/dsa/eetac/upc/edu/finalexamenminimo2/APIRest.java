@@ -13,13 +13,11 @@ import retrofit2.http.GET;
 public interface APIRest {
 
     //We specify the url
-    String BASE_URL = "https://do.diba.cat/api/dataset/municipis/format/json/pag-ini/1/pag-fi/11";
+    String BASE_URL = "https://do.diba.cat/api/dataset/municipis/format/json/pag-ini/1/pag-fi/";
 
     //Get
-    @GET()
-    Call<List<Municipi>> getAllMunicipi();
-
-
+    @GET("11")
+    Call<Municipi> getAllMunicipi();
 
     static APIRest createAPIRest() {
         Gson gson = new GsonBuilder()
